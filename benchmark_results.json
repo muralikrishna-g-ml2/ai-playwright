@@ -1,0 +1,38 @@
+{
+  "timestamp": "2025-11-23T23:35:22.395398",
+  "results": [
+    {
+      "provider": "gemini",
+      "model": "default",
+      "timestamp": "2025-11-23T23:34:46.963384",
+      "success": true,
+      "total_time": 36.22,
+      "healing_time": 32.64,
+      "error": null
+    },
+    {
+      "provider": "openai",
+      "model": "gpt-4o-mini",
+      "timestamp": "2025-11-23T23:35:21.224417",
+      "success": true,
+      "total_time": 34.21,
+      "healing_time": 32.62,
+      "error": null
+    },
+    {
+      "provider": "ollama",
+      "model": "llama3",
+      "timestamp": "2025-11-23T23:35:22.395083",
+      "success": false,
+      "total_time": 0,
+      "healing_time": 0,
+      "error": "OllamaProvider.__init__() got an unexpected keyword argument 'api_key'"
+    }
+  ],
+  "summary": {
+    "total_tests": 3,
+    "passed": 2,
+    "failed": 1,
+    "success_rate": 66.66666666666666
+  }
+}

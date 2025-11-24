@@ -1,10 +1,11 @@
 # AI-Enhanced Playwright Framework
 
-A self-healing test automation framework that uses Google Gemini AI to automatically fix broken locators in Playwright tests.
+A self-healing test automation framework that uses AI to automatically fix broken locators in Playwright tests.
 
 ## Features
 
-- 🤖 **AI-Powered Self-Healing**: Automatically fixes broken locators using Google Gemini AI
+- 🤖 **AI-Powered Self-Healing**: Automatically fixes broken locators using AI
+- 🔄 **Multiple AI Providers**: Support for Google Gemini, OpenAI, Azure OpenAI, Anthropic Claude, and Ollama (Local)
 - 🎯 **Full Playwright API Support**: All locator methods (get_by_role, get_by_label, etc.)
 - 📝 **Automatic Change Logging**: Documents all healing actions for code updates
 - 🔗 **Locator Chaining**: Supports filter, and_, or_, first, last, nth operations
@@ -16,6 +17,13 @@ A self-healing test automation framework that uses Google Gemini AI to automatic
 pip install ai-playwright
 ```
 
+**With specific AI provider:**
+```bash
+pip install ai-playwright[openai]      # For ChatGPT
+pip install ai-playwright[anthropic]   # For Claude
+pip install ai-playwright[all-providers]  # For all providers
+```
+
 ### Prerequisites
 
 1. Install Playwright browsers:
@@ -23,17 +31,26 @@ pip install ai-playwright
 playwright install
 ```
 
-2. Set up your Google Gemini API key:
+2. Set up your AI provider API key:
+
+**For Google Gemini (default):**
 ```bash
 export GEMINI_API_KEY="your-api-key-here"
 ```
 
-Or create a `.env` file:
-```
-GEMINI_API_KEY=your-api-key-here
+**For OpenAI ChatGPT:**
+```bash
+export AI_PROVIDER="openai"
+export OPENAI_API_KEY="your-api-key-here"
 ```
 
-Get your API key from: https://makersuite.google.com/app/apikey
+**For Anthropic Claude:**
+```bash
+export AI_PROVIDER="anthropic"
+export ANTHROPIC_API_KEY="your-api-key-here"
+```
+
+See [AI_PROVIDER_GUIDE.md](AI_PROVIDER_GUIDE.md) for detailed configuration.
 
 ## Quick Start
 
@@ -101,7 +118,7 @@ All Playwright locator methods are supported with self-healing:
 
 1. **Test Runs**: Your test executes normally using Playwright
 2. **Failure Detected**: When a locator fails (TimeoutError), the framework captures the page state
-3. **AI Analysis**: Google Gemini AI analyzes the HTML and suggests alternative locators
+3. **AI Analysis**: Your chosen AI provider (Gemini, ChatGPT, Claude, or Grok) analyzes the HTML and suggests alternative locators
 4. **Auto-Healing**: The test retries with the new locator
 5. **Logging**: Changes are logged to `healing_report.json` for review
 
@@ -125,15 +142,24 @@ Use this report to update your test code with the corrected locators.
 
 ## Advanced Usage
 
-### Custom Healing Logic
+### Using Different AI Providers
 
 ```python
 from ai_playwright import HealerAgent, AIPage
 
-# Use custom API key
-healer = HealerAgent(api_key="your-custom-key")
+# Use OpenAI ChatGPT
+healer = HealerAgent(provider="openai")
 ai_page = AIPage(page)
 ai_page.healer = healer
+
+# Use Anthropic Claude
+healer = HealerAgent(provider="anthropic", model="claude-3-5-sonnet-20241022")
+ai_page.healer = healer
+
+# Use custom provider instance
+from ai_playwright.core.model_providers import GrokProvider
+grok = GrokProvider(api_key="your-key")
+healer = HealerAgent(provider=grok)
 ```
 
 ### Custom Logging
@@ -149,7 +175,22 @@ ai_page.logger = logger
 
 ### Environment Variables
 
-- `GEMINI_API_KEY` or `GOOGLE_API_KEY` - Your Google Gemini API key (required)
+**AI Provider Selection:**
+- `AI_PROVIDER` - Choose provider: `gemini`, `openai`, `anthropic`, `grok` (default: `gemini`)
+
+**Provider API Keys:**
+- `GEMINI_API_KEY` or `GOOGLE_API_KEY` - For Google Gemini
+- `OPENAI_API_KEY` - For OpenAI ChatGPT
+- `ANTHROPIC_API_KEY` - For Anthropic Claude
+- `GROK_API_KEY` or `XAI_API_KEY` - For Grok
+
+**Model Selection (Optional):**
+- `GEMINI_MODEL` - Gemini model name
+- `OPENAI_MODEL` - OpenAI model name (e.g., `gpt-4o`, `gpt-4o-mini`)
+- `ANTHROPIC_MODEL` - Claude model name
+- `GROK_MODEL` - Grok model name
+
+See [AI_PROVIDER_GUIDE.md](AI_PROVIDER_GUIDE.md) for detailed configuration.
 
 ### Playwright Configuration
 
