@@ -101,16 +101,28 @@ class HealerAgent:
         {page_content[:20000]} 
         ```
         
-        Analyze the HTML and suggest a NEW, robust Playwright locator (CSS or XPath) that corresponds to the element intended by the original locator.
+        Analyze the HTML and suggest a NEW locator that can find the element.
         
-        RULES:
-        1. Look for elements with similar IDs, classes, or text content.
-        2. If the ID changed (e.g. 'submit-btn' -> 'continue-btn'), suggest the new ID.
-        3. If the text is similar (e.g. 'Submit' -> 'Continue'), suggest the new element.
-        4. Return ONLY the locator string.
-        5. Only return "ELEMENT_MISSING" if there is absolutely no interactive element that could be the target.
+        CRITICAL RULES:
+        1. Return ONLY a CSS selector or XPath expression
+        2. DO NOT return Playwright method names like "get_by_text()" or "get_by_role()"
+        3. Look for elements with similar IDs, classes, or text content
+        4. If the ID changed (e.g. 'submit-btn' -> 'continue-btn'), return the new ID selector like "#continue-btn"
+        5. If you need to match by text, use CSS like: a:has-text("More information") or a[href*="domain"]
+        6. Only return "ELEMENT_MISSING" if there is absolutely no interactive element that could be the target
         
-        Return ONLY the new locator string. Do not add markdown formatting.
+        EXAMPLES OF VALID RESPONSES:
+        - #continue-btn
+        - button.submit
+        - a[href="https://iana.org/domains/example"]
+        - //button[contains(text(), 'Submit')]
+        
+        EXAMPLES OF INVALID RESPONSES (DO NOT USE):
+        - get_by_text('Learn more')
+        - get_by_role('button', name='Submit')
+        - page.locator('#btn')
+        
+        Return ONLY the CSS selector or XPath. No explanations, no code, no markdown.
         """
         
         try:
@@ -122,6 +134,12 @@ class HealerAgent:
             # Remove backticks if present
             if new_locator.startswith("`") and new_locator.endswith("`"):
                 new_locator = new_locator[1:-1]
+            
+            # Validate that it's not a Playwright method
+            if "get_by_" in new_locator or "locator(" in new_locator:
+                print(f"Warning: AI returned invalid locator format: {new_locator}")
+                return None
+            
             return new_locator
         except Exception as e:
             print(f"Healer Agent failed: {e}")
