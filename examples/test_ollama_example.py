@@ -23,6 +23,13 @@ def ai_page():
         browser.close()
 
 
+import os
+
+def should_run_ollama():
+    """Check if Ollama tests should run"""
+    return os.getenv("ENABLE_OLLAMA_TESTS", "false").lower() == "true"
+
+@pytest.mark.skipif(not should_run_ollama(), reason="Ollama tests disabled. Set ENABLE_OLLAMA_TESTS=true to run.")
 def test_example_with_ollama(ai_page):
     """
     Example test that will use AI healing with local Ollama.
