@@ -128,12 +128,24 @@ class AIElementHandle:
             if new_locator and new_locator != "ELEMENT_MISSING":
                 print(f"Healed! New locator: {new_locator}")
                 
-                # Log the change
+                # Prepare test context
+                test_context = {
+                    "browser": self.page.original_page.context.browser.browser_type.name if hasattr(self.page.original_page.context, 'browser') else "unknown",
+                    "viewport": str(self.page.original_page.viewport_size) if self.page.original_page.viewport_size else "unknown",
+                    "failure_count": 1,  # Could be enhanced to track actual failure count
+                    "stack_trace": str(e)
+                }
+                
+                # Log the change with comprehensive details
                 self.page.logger.log_change(
                     test_name=os.getenv("PYTEST_CURRENT_TEST", "unknown_test"),
                     original_locator=self.locator_description,
                     new_locator=new_locator,
-                    error_message=str(e)
+                    error_message=str(e),
+                    action_name=action_name,
+                    page_content=page_content[:5000],  # Truncate to avoid huge logs
+                    confidence_score=0.85,  # Could be enhanced with actual AI confidence
+                    test_context=test_context
                 )
                 
                 # Update self.element and self.locator_description
