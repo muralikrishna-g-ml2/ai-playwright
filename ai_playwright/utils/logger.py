@@ -18,15 +18,21 @@ class ChangeLogger:
         >>> logger.log_change("test_login", "#old-btn", "#new-btn", "Timeout")
     """
     
-    def __init__(self, log_file="healing_report.json"):
+    def __init__(self, log_file="recommendations/healing_report.json"):
         """
         Initialize the ChangeLogger.
         
         Args:
             log_file (str, optional): Path to the JSON log file. 
-                Defaults to "healing_report.json".
+                Defaults to "recommendations/healing_report.json".
         """
         self.log_file = log_file
+        
+        # Create recommendations directory if it doesn't exist
+        log_dir = os.path.dirname(self.log_file)
+        if log_dir and not os.path.exists(log_dir):
+            os.makedirs(log_dir, exist_ok=True)
+        
         # Initialize file if it doesn't exist
         if not os.path.exists(self.log_file):
             with open(self.log_file, 'w') as f:

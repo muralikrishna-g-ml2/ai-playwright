@@ -168,10 +168,10 @@ echo "GEMINI_API_KEY=your-key" >> .env
 echo "OPENAI_API_KEY=your-key" >> .env
 
 # Run benchmark
-python benchmark_providers.py
+python ai_playwright/tests/benchmark_providers.py
 
 # View results
-cat benchmark_results.json
+cat benchmark_results/benchmark_results.json
 ```
 
 ## Next Steps

@@ -6,8 +6,15 @@ from ai_playwright import AIPage
 def test_healing_with_detailed_logging():
     """
     Test that intentionally fails to trigger the healing mechanism
-    and verify that comprehensive details are logged to healing_report.json
+    and verify that comprehensive details are logged to recommendations/healing_report.json
     """
+    import os
+    
+    # Clean up previous report if exists
+    report_path = "recommendations/healing_report.json"
+    if os.path.exists(report_path):
+        os.remove(report_path)
+        
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
         page = browser.new_page()
@@ -26,6 +33,10 @@ def test_healing_with_detailed_logging():
             raise
         finally:
             browser.close()
+            
+    # Verify report was created
+    assert os.path.exists(report_path), f"Healing report not found at {report_path}"
+    print(f"✓ Verified healing report created at {report_path}")
 
 
 if __name__ == "__main__":

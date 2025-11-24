@@ -120,11 +120,11 @@ All Playwright locator methods are supported with self-healing:
 2. **Failure Detected**: When a locator fails (TimeoutError), the framework captures the page state
 3. **AI Analysis**: Your chosen AI provider (Gemini, ChatGPT, Claude, or Grok) analyzes the HTML and suggests alternative locators
 4. **Auto-Healing**: The test retries with the new locator
-5. **Logging**: Changes are logged to `healing_report.json` for review
+5. **Logging**: Changes are logged to `recommendations/healing_report.json` for review
 
 ## Healing Report
 
-All healing actions are logged to `healing_report.json`:
+All healing actions are logged to `recommendations/healing_report.json`:
 
 ```json
 [
@@ -203,7 +203,7 @@ ai_page.set_default_timeout(5000)  # 5 seconds
 ## Best Practices
 
 1. **Use Semantic Locators**: Prefer `get_by_role`, `get_by_label` over CSS selectors
-2. **Review Healing Reports**: Regularly check `healing_report.json` and update tests
+2. **Review Healing Reports**: Regularly check `recommendations/healing_report.json` and update tests
 3. **Set Appropriate Timeouts**: Balance between test speed and healing accuracy
 4. **Keep API Key Secure**: Use environment variables, never commit to version control
 
