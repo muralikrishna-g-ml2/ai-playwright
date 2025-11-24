@@ -238,11 +238,12 @@ class OllamaProvider(ModelProvider):
         OLLAMA_MODEL: Model name (default: llama3)
     """
     
-    def __init__(self, base_url: Optional[str] = None, model: Optional[str] = None):
+    def __init__(self, api_key: Optional[str] = None, base_url: Optional[str] = None, model: Optional[str] = None):
         """
         Initialize Ollama provider.
         
         Args:
+            api_key (str, optional): Not used for Ollama, included for compatibility
             base_url (str, optional): Ollama base URL
             model (str, optional): Model name to use
         """
@@ -251,6 +252,7 @@ class OllamaProvider(ModelProvider):
         except ImportError:
             raise ImportError("requests package is required for OllamaProvider. Install with: pip install requests")
         
+        # api_key is ignored for Ollama (local), but accepted for compatibility
         self.base_url = base_url or os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
         self.model_name = model or os.getenv("OLLAMA_MODEL", "llama3")
         self.api_url = f"{self.base_url}/api/generate"
