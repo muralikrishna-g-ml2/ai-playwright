@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Demo Page</title>
+</head>
+<body>
+    <h1>Welcome to the AI Playwright Demo</h1>
+    <!-- The test will look for #submit-btn, but we have #continue-btn -->
+    <button id="continue-btn" class="primary-action">Continue</button>
+    
+    <div id="result"></div>
+
+    <script>
+        document.getElementById('continue-btn').addEventListener('click', function() {
+            document.getElementById('result').innerText = 'Button Clicked!';
+        });
+    </script>
+</body>
+</html>

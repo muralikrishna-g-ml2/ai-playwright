@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Comprehensive Locator Test Page</title>
+</head>
+
+<body>
+    <h1>Locator Test Page</h1>
+
+    <!-- Test get_by_role -->
+    <button id="old-submit">Old Submit</button>
+
+    <!-- Test get_by_label -->
+    <label for="email-input">Email Address</label>
+    <input id="email-input" type="email" />
+
+    <!-- Test get_by_placeholder -->
+    <input id="search-input" type="text" placeholder="Search products..." />
+
+    <!-- Test get_by_text -->
+    <div class="message">Welcome back, User!</div>
+
+    <!-- Test get_by_alt_text -->
+    <img src="logo.png" alt="Company Logo" />
+
+    <!-- Test get_by_title -->
+    <span title="Total Items">15 items</span>
+
+    <!-- Test get_by_test_id -->
+    <button data-testid="checkout-button">Proceed to Checkout</button>
+
+    <!-- Test chaining with filter -->
+    <ul class="products">
+        <li class="product">
+            <h3>Product A</h3>
+            <button class="add-to-cart">Add to Cart</button>
+        </li>
+        <li class="product">
+            <h3>Product B</h3>
+            <button class="add-to-cart">Add to Cart</button>
+        </li>
+        <li class="product featured">
+            <h3>Product C</h3>
+            <button class="add-to-cart">Add to Cart</button>
+        </li>
+    </ul>
+
+    <script>
+        // Add click handlers
+        document.getElementById('old-submit').addEventListener('click', function () {
+            console.log('Old submit clicked');
+        });
+
+        document.querySelector('[data-testid="checkout-button"]').addEventListener('click', function () {
+            console.log('Checkout clicked');
+        });
+
+        document.querySelectorAll('.add-to-cart').forEach(btn => {
+            btn.addEventListener('click', function () {
+                console.log('Add to cart clicked');
+            });
+        });
+    </script>
+</body>
+
+</html>
