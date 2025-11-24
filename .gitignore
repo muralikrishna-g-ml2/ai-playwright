@@ -59,6 +59,8 @@ test-results/
 
 # AI Playwright specific
 healing_report.json
+recommendations/
+benchmark_results/
 test_output*.txt
 models.txt
 verify_*.py

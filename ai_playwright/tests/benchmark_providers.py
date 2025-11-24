@@ -181,7 +181,11 @@ class ProviderBenchmark:
             print(f"\nFastest Provider: {fastest['provider']} ({fastest['model']}) - {fastest['total_time']:.2f}s")
         
         # Save detailed results
-        output_file = "benchmark_results.json"
+        output_file = "benchmark_results/benchmark_results.json"
+        
+        # Create benchmark_results directory if it doesn't exist
+        os.makedirs("benchmark_results", exist_ok=True)
+        
         with open(output_file, 'w') as f:
             json.dump({
                 "timestamp": datetime.now().isoformat(),
