@@ -1,4 +1,8 @@
-playwright
-pytest
-google-generativeai
-python-dotenv
+playwright>=1.40.0
+pytest>=7.0.0
+python-dotenv>=1.0.0
+google-generativeai>=0.3.0
+
+# Optional AI Providers (install as needed)
+# pip install openai>=1.0.0        # For ChatGPT
+# pip install anthropic>=0.8.0     # For Claude

@@ -6,12 +6,12 @@ with open("README.md", "r", encoding="utf-8") as fh:
 setup(
     name="ai-playwright",
     version="0.1.0",
-    author="Your Name",
-    author_email="your.email@example.com",
+    author="Murali Krishna",
+    author_email="muralikrishna.g.ml2@gmail.com",
     description="AI-enhanced Playwright framework with self-healing test capabilities",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/yourusername/ai-playwright",
+    url="https://github.com/muralikrishna-g-ml2/ai-playwright",
     packages=find_packages(exclude=["tests*"]),
     classifiers=[
         "Development Status :: 3 - Alpha",
@@ -35,6 +35,20 @@ setup(
     extras_require={
         "dev": [
             "pytest-playwright>=0.4.0",
+        ],
+        "openai": [
+            "openai>=1.0.0",
+        ],
+        "anthropic": [
+            "anthropic>=0.8.0",
+        ],
+        "ollama": [
+            "requests>=2.0.0",
+        ],
+        "all-providers": [
+            "openai>=1.0.0",
+            "anthropic>=0.8.0",
+            "requests>=2.0.0",
         ],
     },
 )

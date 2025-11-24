@@ -1,53 +1,78 @@
 import os
-import google.generativeai as genai
 from dotenv import load_dotenv
+from .model_providers import create_provider, ModelProvider
+from typing import Optional
 
 load_dotenv()
 
 class HealerAgent:
     """
-    AI-powered test healing agent using Google Gemini.
+    AI-powered test healing agent using configurable AI models.
     
-    This class uses Google's Gemini AI to analyze failed test locators and suggest
-    alternative locators that can successfully locate the intended element.
+    This class uses various AI providers (Gemini, OpenAI, Anthropic, Grok) to analyze 
+    failed test locators and suggest alternative locators that can successfully locate 
+    the intended element.
     
     Attributes:
-        api_key (str): Google Gemini API key
-        model: Configured Gemini generative model instance
+        provider (ModelProvider): The AI model provider instance
     
     Raises:
-        ValueError: If GOOGLE_API_KEY or GEMINI_API_KEY environment variable is not set
+        ValueError: If required API key for the selected provider is not set
     
     Example:
+        >>> # Use default provider (Gemini)
         >>> healer = HealerAgent()
-        >>> new_locator = healer.heal(page_html, "#old-button", "TimeoutError")
-        >>> print(new_locator)  # "#new-button"
+        
+        >>> # Use specific provider
+        >>> healer = HealerAgent(provider="openai")
+        
+        >>> # Use custom provider instance
+        >>> from ai_playwright.core.model_providers import OpenAIProvider
+        >>> custom_provider = OpenAIProvider(api_key="key", model="gpt-4")
+        >>> healer = HealerAgent(provider=custom_provider)
     """
     
-    def __init__(self, api_key=None):
+    def __init__(self, provider: Optional[str | ModelProvider] = None, api_key: Optional[str] = None, model: Optional[str] = None):
         """
-        Initialize the HealerAgent with Google Gemini AI.
+        Initialize the HealerAgent with an AI model provider.
         
         Args:
-            api_key (str, optional): Google Gemini API key. If not provided,
-                will attempt to read from GOOGLE_API_KEY or GEMINI_API_KEY
-                environment variables.
+            provider (str | ModelProvider, optional): Provider name ('gemini', 'openai', 'anthropic', 'grok')
+                or a ModelProvider instance. If None, uses AI_PROVIDER env var or defaults to 'gemini'.
+            api_key (str, optional): API key for the provider. If not provided,
+                will attempt to read from environment variables.
+            model (str, optional): Model name to use. If not provided, uses provider's default.
         
         Raises:
-            ValueError: If no API key is found in parameters or environment
-        """
-        self.api_key = api_key or os.getenv("GOOGLE_API_KEY") or os.getenv("GEMINI_API_KEY")
-        if not self.api_key:
-            raise ValueError("GOOGLE_API_KEY or GEMINI_API_KEY environment variable is required for HealerAgent")
+            ValueError: If no API key is found for the selected provider
         
-        genai.configure(api_key=self.api_key)
-        self.model = genai.GenerativeModel('gemini-2.0-flash-lite-preview-02-05')
+        Examples:
+            >>> # Use Gemini (default)
+            >>> healer = HealerAgent()
+            
+            >>> # Use OpenAI ChatGPT
+            >>> healer = HealerAgent(provider="openai")
+            
+            >>> # Use Anthropic Claude with specific model
+            >>> healer = HealerAgent(provider="anthropic", model="claude-3-opus-20240229")
+            
+            >>> # Use custom provider instance
+            >>> from ai_playwright.core.model_providers import GrokProvider
+            >>> grok = GrokProvider(api_key="your-key")
+            >>> healer = HealerAgent(provider=grok)
+        """
+        # If provider is already a ModelProvider instance, use it directly
+        if isinstance(provider, ModelProvider):
+            self.provider = provider
+        else:
+            # Create provider using factory
+            self.provider = create_provider(provider_name=provider, api_key=api_key, model=model)
 
-    def heal(self, page_content, failed_locator, error_message):
+    def heal(self, page_content: str, failed_locator: str, error_message: str) -> Optional[str]:
         """
         Analyze a failed locator and suggest an alternative.
         
-        Uses Google Gemini AI to analyze the page HTML and suggest a new locator
+        Uses the configured AI provider to analyze the page HTML and suggest a new locator
         that can successfully locate the intended element.
         
         Args:
@@ -89,8 +114,11 @@ class HealerAgent:
         """
         
         try:
-            response = self.model.generate_content(prompt)
-            new_locator = response.text.strip()
+            response = self.provider.generate(prompt)
+            if not response:
+                return None
+            
+            new_locator = response.strip()
             # Remove backticks if present
             if new_locator.startswith("`") and new_locator.endswith("`"):
                 new_locator = new_locator[1:-1]
